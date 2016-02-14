@@ -23,34 +23,34 @@ Library provides bunch of interfaces and about 5 concrete implementation for han
 In your aggregate you need implement `Cocoders\EventStore\AggregateRoot` insterface (you can use `Cocoders\EventStore\AggregateRootBehavior` trait if tou want).
     Example: [Example Domain Invoice Aggregate](tests/ExampleDomain/Invoice.php)
 
-1. Step 2 - define own events and use it
+2. Step 2 - define own events and use it
 You should define new event classes and use those events in you aggregate
     * [Example of using events in Invoice](tests/ExampleDomain/Invoice.php)
     * [Example of event class](tests/ExampleDomain/Invoice/Events/InvoiceAdded.php)
 
-2. Step 3 - implement EventStore
+3. Step 3 - implement EventStore
 You need to create concrete implementation of `Cocoders\EventStore\EventStore` interface, using your favorite db engine ;)
     Example: [Json File EventStore](tests/ExampleDomain/Infastracture/File/EventStore.php)
 
-3. Step 4 - do some operation on aggregate and add fresh events from Aggregate to event store, and commit event store.
+4. Step 4 - do some operation on aggregate and add fresh events from Aggregate to event store, and commit event store.
 
     * Example 1:
-```php
-    $eventStore = new MyEventStore();
-    $invoice = Invoice::issueInvoice(
-        Invoice\Id::generate();
-        $command->getSeller(),
-        $command->getBuyer(),
-        $command->maxItemNumber
-    );
-    $eventStore->apply($invoice->getRecordedEvents());
-    $eventStore->commit();
-```
+        ```php
+            $eventStore = new MyEventStore();
+            $invoice = Invoice::issueInvoice(
+                Invoice\Id::generate();
+                $command->getSeller(),
+                $command->getBuyer(),
+                $command->maxItemNumber
+            );
+            $eventStore->apply($invoice->getRecordedEvents());
+            $eventStore->commit();
+        ```
     * Example 2:
         * [Apply using repository pattern](tests/ExampleDomain/EventStore/Invoices.php)
         * [Commit using command bus middleware](tests/ExampleDomain/CommandBus/EventStoreMiddleware.php)
 
-4. Step 5 - define projections.
+5. Step 5 - define projections.
    As you can see in example, invoice aggregate does not have many "getters".
    You should generate read model using projection instead of using getters.
    Projection is basically event subscriber which can react to event by chaging read model.
