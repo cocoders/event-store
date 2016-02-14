@@ -89,7 +89,7 @@ Then on docker console run:
 
 ```bash
 composer install
-php bin/phpspec -fpretty
+php bin/phpspec run -fpretty
 php bin/phpunit
 ```
 
