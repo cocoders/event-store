@@ -35,18 +35,19 @@ You need to create concrete implementation of `Cocoders\EventStore\EventStore` i
 4. Step 4 - do some operation on aggregate and add fresh events from Aggregate to event store, and commit event store.
 
     * Example 1:
-        ```php
-            $eventStore = new MyEventStore();
-            $invoice = Invoice::issueInvoice(
-                Invoice\Id::generate();
-                $command->getSeller(),
-                $command->getBuyer(),
-                $command->maxItemNumber
-            );
-            $eventStore->apply($invoice->getRecordedEvents());
-            $eventStore->commit();
-        ```
+```php
+    $eventStore = new MyEventStore();
+    $invoice = Invoice::issueInvoice(
+        Invoice\Id::generate();
+        $command->getSeller(),
+        $command->getBuyer(),
+        $command->maxItemNumber
+    );
+    $eventStore->apply($invoice->getRecordedEvents());
+    $eventStore->commit();
+```
     * Example 2:
+        * [Execute logic on aggregate](tests/ExampleDomain/UseCase/IssueInvoice.php)
         * [Apply using repository pattern](tests/ExampleDomain/EventStore/Invoices.php)
         * [Commit using command bus middleware](tests/ExampleDomain/CommandBus/EventStoreMiddleware.php)
 
