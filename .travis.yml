@@ -7,5 +7,5 @@ install:
   - composer install
 
 script:
-  - bin/phpspec -fpretty
+  - bin/phpspec run -fpretty
   - bin/phpunit
