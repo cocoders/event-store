@@ -19,7 +19,7 @@ use ExampleDomain\UseCase\IssueInvoice\Command as IssueInvoiceCommand;
 
 use League\Tactician\Plugins\LockingMiddleware;
 
-class FunctionalEventStoreTest extends PHPUnit_Framework_TestCase
+class IntegrationWithExampleDomainTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var EventStore
