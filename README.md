@@ -34,7 +34,8 @@ You need to create concrete implementation of `Cocoders\EventStore\EventStore` i
 
 4. Step 4 - do some operation on aggregate and add fresh events from Aggregate to event store, and commit event store.
 
-    * Example 1:
+Examples:
+
 ```php
     $eventStore = new MyEventStore();
     $invoice = Invoice::issueInvoice(
@@ -46,10 +47,10 @@ You need to create concrete implementation of `Cocoders\EventStore\EventStore` i
     $eventStore->apply($invoice->getRecordedEvents());
     $eventStore->commit();
 ```
-    * Example 2:
-        * [Execute logic on aggregate](tests/ExampleDomain/UseCase/IssueInvoice.php)
-        * [Apply using repository pattern](tests/ExampleDomain/EventStore/Invoices.php)
-        * [Commit using command bus middleware](tests/ExampleDomain/CommandBus/EventStoreMiddleware.php)
+    
+* [Execute logic on aggregate](tests/ExampleDomain/UseCase/IssueInvoice.php)
+* [Apply using repository pattern](tests/ExampleDomain/EventStore/Invoices.php)
+* [Commit using command bus middleware](tests/ExampleDomain/CommandBus/EventStoreMiddleware.php)
 
 5. Step 5 - define projections.
    As you can see in example, invoice aggregate does not have many "getters".
