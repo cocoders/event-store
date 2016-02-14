@@ -1,7 +1,7 @@
 Quite basic and simple Event Store abstraction layer
 ==============================================
 
-![Travis build](https://api.travis-ci.org/cocoders/event-store.svg)
+[![Travis build](https://api.travis-ci.org/cocoders/event-store.svg)](https://travis-ci.org/cocoders/event-store)
 
 Event store layer to help us - [Cocoders](http://cocoders.com) to implement event sourcing in our projects.
 It is quite simple (or event stupid) abstraction layer (yunno [KISS](https://en.wikipedia.org/wiki/KISS_principle))
