@@ -1,0 +1,11 @@
+language: php
+
+php:
+  - 7.0
+
+install:
+  - composer install
+
+script:
+  - bin/phpspec -fpretty
+  - bin/phpunit

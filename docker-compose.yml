@@ -1,0 +1,4 @@
+eventstore:
+  build: .
+  volumes:
+    - .:/home/cocoders/event-store

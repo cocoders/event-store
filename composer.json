@@ -1,0 +1,23 @@
+{
+    "name": "cocoders/event-store",
+    "license": "MIT",
+    "description": "Event store layer to help us (Cocoders) to implement event sourcing in our projects",
+    "autoload": {
+        "psr-4": {"": "src"}
+    },
+    "autoload-dev": {
+        "psr-4": {"": "tests"}
+    },
+    "require": {
+        "php": "^7.0"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^2.4",
+        "phpunit/phpunit": "5.2.*",
+        "ramsey/uuid": "^3.1",
+        "league/tactician": "^1.0"
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}
