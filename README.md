@@ -17,18 +17,20 @@ Installation
 Package can be installed using composer `composer require cocoders/event-store`
 Usage
 =======
-Library provides bunch of interfaces and about 5 concrete implementation for handling domain events.
+Library provides bunch of interfaces and about 5 concrete classes for handling domain events.
 
-1. Step 1 - define aggregate
-In your aggregate you need implement `Cocoders\EventStore\AggregateRoot` insterface (you can use `Cocoders\EventStore\AggregateRootBehavior` trait if tou want).
+What you need to do in order to setup this event store with your project? Follow those 5 steps.
+
+1. Step 1 - define you aggregate
+In your aggregate you need implement `Cocoders\EventStore\AggregateRoot` interface (you can use `Cocoders\EventStore\AggregateRootBehavior` trait if tou want).
     Example: [Example Domain Invoice Aggregate](tests/ExampleDomain/Invoice.php)
 
-2. Step 2 - define own events and use it
+2. Step 2 - define own events and use it in aggregate
 You should define new event classes and use those events in you aggregate
     * [Example of using events in Invoice](tests/ExampleDomain/Invoice.php)
     * [Example of event class](tests/ExampleDomain/Invoice/Events/InvoiceAdded.php)
 
-3. Step 3 - implement EventStore
+3. Step 3 - implement own EventStore
 You need to create concrete implementation of `Cocoders\EventStore\EventStore` interface, using your favorite db engine ;)
     Example: [Json File EventStore](tests/ExampleDomain/Infastracture/File/EventStore.php)
 
@@ -52,7 +54,7 @@ Examples:
 * [Apply using repository pattern](tests/ExampleDomain/EventStore/Invoices.php)
 * [Commit using command bus middleware](tests/ExampleDomain/CommandBus/EventStoreMiddleware.php)
 
-5. Step 5 - define projections.
+5. Step 5 - define own projections.
    As you can see in example, invoice aggregate does not have many "getters".
    You should generate read model using projection instead of using getters.
    Projection is basically event subscriber which can react to event by chaging read model.
