@@ -37,8 +37,6 @@ class ProjectionManagerSpec extends ObjectBehavior
         Event $secondEvent
     ) {
         $subscribers->registerSubscriber(Argument::cetera())->willReturn();
-        $subscribers->notify($event)->shouldBeCalled();
-        $subscribers->notify($secondEvent)->shouldBeCalled();
 
         $this->registerProjection('EventNameOccurred', $projection1);
         $this->registerProjection('EventNameOccurred', $projection2);
@@ -49,5 +47,7 @@ class ProjectionManagerSpec extends ObjectBehavior
 
         $projection1->clear()->shouldHaveBeenCalled();
         $projection2->clear()->shouldHaveBeenCalled();
+        $projection1->notify($event)->shouldHaveBeenCalled();
+        $projection2->notify($event)->shouldHaveBeenCalled();
     }
 }

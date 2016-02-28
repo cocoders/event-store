@@ -2,6 +2,7 @@
 
 namespace Cocoders\ReadModel;
 
+use Cocoders\EventStore\Event;
 use Cocoders\EventStore\EventBus\EventSubscribers;
 use Cocoders\EventStore\EventStream;
 
@@ -12,6 +13,7 @@ final class ProjectionManager
      * @var Projection[]
      */
     private $projections = [];
+    private $projectionsForEvent = [];
 
     public function __construct(EventSubscribers $subscribers)
     {
@@ -21,6 +23,7 @@ final class ProjectionManager
     public function registerProjection($eventName, Projection $projection)
     {
         $this->projections[] = $projection;
+        $this->projectionsForEvent[$eventName][] = $projection;
         $this->subscribers->registerSubscriber($eventName, $projection);
     }
 
@@ -31,8 +34,28 @@ final class ProjectionManager
         }
 
         foreach ($eventStream as $event) {
-            $this->subscribers->notify($event);
+            $this->notifyProjections($event);
         }
+    }
+
+    private function notifyProjections(Event $event)
+    {
+        foreach ($this->projectionsForEvent($event) as $projection) {
+            $projection->notify($event);
+        }
+    }
+
+    /**
+     * @param Event $event
+     * @return Projection[]
+     */
+    private function projectionsForEvent(Event $event): array
+    {
+        if (! isset($this->projectionsForEvent[$event->getName()])) {
+            return [];
+        }
+
+        return $this->projectionsForEvent[$event->getName()];
     }
 }
 
