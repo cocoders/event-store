@@ -24,7 +24,7 @@ final class InvoiceIssued implements Event
 
     public static function fromJson(array $jsonArray): Event
     {
-        return new InvoiceIssued(
+        $event = new InvoiceIssued(
             Id::fromString($jsonArray['aggregateRootId']),
             new Seller(
                 $jsonArray['seller']['name'],
@@ -58,6 +58,9 @@ final class InvoiceIssued implements Event
             ),
             (int) $jsonArray['maxItemNumbers']
         );
+        $event->occurredOn = new \DateTimeImmutable($jsonArray['occuredOn']);
+
+        return $event;
     }
 
     public function __construct(Id $id, Seller $seller, Buyer $buyer, $maxItemNumbers)

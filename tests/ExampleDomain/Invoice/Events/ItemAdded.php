@@ -26,7 +26,7 @@ final class ItemAdded implements Event
 
     public static function fromJson(array $jsonArray): Event
     {
-        return new ItemAdded(
+        $event = new ItemAdded(
             Id::fromString($jsonArray['aggregateRootId']),
             $jsonArray['serviceName'],
             new Amount(
@@ -35,6 +35,9 @@ final class ItemAdded implements Event
             ),
             (int) $jsonArray['quantity']
         );
+        $event->occurredOn = new \DateTimeImmutable($jsonArray['occuredOn']);
+
+        return $event;
     }
 
     public function __construct(Id $id, string $name, Amount $amount, int $quantity)
