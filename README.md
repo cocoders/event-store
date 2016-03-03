@@ -46,7 +46,7 @@ Examples:
         $command->getBuyer(),
         $command->maxItemNumber
     );
-    $eventStore->apply($invoice->getRecordedEvents());
+    $eventStore->apply(new EventStream\Name(Invoice::class), $invoice->getRecordedEvents());
     $eventStore->commit();
 ```
     
@@ -69,7 +69,7 @@ Examples:
       'InvoiceIssued',
       new MyProjection()
   );
-  $newEventsStream = $eventStore->findUncommited();
+  $newEventsStream = $eventStore->findUncommited(new EventStream\Name(Invoice::class));
   $eventStore->commit();
   $eventStore->notify($newEventsStream); //now event bus will notify projections as well
 ```
