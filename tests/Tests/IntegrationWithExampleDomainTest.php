@@ -2,10 +2,12 @@
 
 namespace Tests;
 
+use ExampleDomain\Invoice;
 use League\Tactician\CommandBus;
 use PHPUnit_Framework_TestCase;
 
 use Cocoders\EventStore\EventBus\EventBus;
+use Cocoders\EventStore\EventStream;
 use Cocoders\EventStore\EventBus\EventSubscribers;
 use Cocoders\ReadModel\ProjectionManager;
 
@@ -67,7 +69,10 @@ class IntegrationWithExampleDomainTest extends PHPUnit_Framework_TestCase
 
         $eventSourceMiddleware = new EventStoreMiddleware(
             $this->eventStore,
-            $eventBus
+            $eventBus,
+            [
+                Invoice::class
+            ]
         );
         $lockingMiddleware = new LockingMiddleware();
         $this->commandBus = new CommandBus([
@@ -99,8 +104,8 @@ class IntegrationWithExampleDomainTest extends PHPUnit_Framework_TestCase
 
         $this->commandBus->handle($command);
 
-        $this->assertCount(0, $this->eventStore->findUncommited());
-        $this->assertCount(1, $this->eventStore->all());
+        $this->assertCount(0, $this->eventStore->findUncommited(new EventStream\Name(Invoice::class)));
+        $this->assertCount(1, $this->eventStore->all(new EventStream\Name(Invoice::class)));
     }
 
     /**
@@ -142,7 +147,7 @@ class IntegrationWithExampleDomainTest extends PHPUnit_Framework_TestCase
 
         $this->commandBus->handle($command);
 
-        $eventStream = $this->eventStore->all();
+        $eventStream = $this->eventStore->all(new EventStream\Name(Invoice::class));
         $events = $eventStream->all();
         $this->assertCount(2, $eventStream);
         $this->assertEquals('Leszek Prabucki', $events[0]->getBuyer()->getName());

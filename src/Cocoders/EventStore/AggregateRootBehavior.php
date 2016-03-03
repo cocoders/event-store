@@ -17,9 +17,9 @@ trait AggregateRootBehavior
         return $aggregate;
     }
 
-    public function getRecordedEvents(): EventStream
+    public function getRecordedEvents(): array
     {
-        return new EventStream($this->events);
+        return $this->events;
     }
 
     public function apply(Event $event)

@@ -11,7 +11,7 @@ final class EventStream implements Iterator
      */
     private $events;
 
-    public function __construct(array $events)
+    public function __construct(EventStream\Name $name, array $events)
     {
         $this->events = new \ArrayIterator($events);
     }
@@ -43,6 +43,12 @@ final class EventStream implements Iterator
 
     public function all(): array
     {
+        $this->events->uasort(
+            function (Event $event1, Event $event2) {
+                return $event1->occurredOn() <= $event2->occurredOn() ? -1 : 1;
+            }
+        );
+
         $events = [];
         foreach ($this->events as $event) {
             $events[] = $event;

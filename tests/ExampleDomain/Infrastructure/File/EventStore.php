@@ -23,65 +23,73 @@ final class EventStore implements EventStoreInterface
         $this->eventStorePath = $eventStorePath;
     }
 
-    public function find(AggregateRootId $id): EventStream
+    public function find(EventStream\Name $name, AggregateRootId $id): EventStream
     {
         $events = [];
 
-        foreach ($this->all() as $event) {
+        foreach ($this->all($name) as $event) {
             if ($event->getAggreagateRootId() == $id) {
                 $events[] = $event;
             }
         }
 
-        return new EventStream($events);
+        return new EventStream($name, $events);
     }
 
-    public function all(): EventStream
+    public function all(EventStream\Name $name): EventStream
     {
         if (! file_exists($this->eventStorePath)) {
-            return new EventStream([]);
+            return new EventStream($name, []);
         }
 
         $jsonEvents = json_decode(file_get_contents($this->eventStorePath), true);
-        $events = $this->hydrateToEventObjects($jsonEvents);
+        if (! isset($jsonEvents[(string) $name])) {
+            return new EventStream($name, []);
+        }
+        $events = $this->hydrateToEventObjects($jsonEvents[(string) $name]);
 
-        return new EventStream($events);
+        return new EventStream($name, $events);
     }
 
-    public function apply(EventStream $eventStream)
+    public function apply(EventStream\Name $name, array $events)
     {
-        $this->uncommitedStreams[] = $eventStream;
+        if (! isset($this->uncommitedStreams[(string) $name])) {
+            $this->uncommitedStreams[(string) $name] = $events;
+            return;
+        }
+
+        $this->uncommitedStreams[(string) $name] = array_merge(
+            $this->uncommitedStreams[(string) $name],
+            $events
+        );
     }
 
-    public function findUncommited(): EventStream
+    public function findUncommited(EventStream\Name $name): EventStream
     {
-        $events = $this->getEventsFromUncommitedStreams([]);
+        $events = [];
+        if (isset($this->uncommitedStreams[(string) $name])) {
+            $events = $this->uncommitedStreams[(string) $name];
+        }
 
-        return new EventStream($events);
+        return new EventStream($name, $events);
     }
 
     public function commit()
     {
-        $actualEventStream = $this->all();
-        $events = $actualEventStream->all();
-
-        $events = $this->getEventsFromUncommitedStreams($events);
-        $this->uncommitedStreams = [];
-
-        file_put_contents($this->eventStorePath, json_encode($events));
-    }
-
-    /**
-     * @param Event[] $events
-     * @return Event[]
-     */
-    private function getEventsFromUncommitedStreams($events)
-    {
-        foreach ($this->uncommitedStreams as $stream) {
-            $events = array_merge($events, $stream->all());
+        $eventStreams = [];
+        if (file_exists($this->eventStorePath)) {
+            $eventStreams = json_decode(file_get_contents($this->eventStorePath), true);
         }
+        foreach ($this->uncommitedStreams as $streamName => $events) {
+            if (isset($eventStreams[$streamName])) {
+                $eventStreams[$streamName] = array_merge($eventStreams[$streamName], $events);
+            } else {
+                $eventStreams[$streamName] = $events;
+            }
+        }
+        file_put_contents($this->eventStorePath, json_encode($eventStreams));
 
-        return $events;
+        $this->uncommitedStreams = [];
     }
 
     private function hydrateToEventObjects(array $jsonEvents)

@@ -26,7 +26,7 @@ class EventBusSpec extends ObjectBehavior
     {
         $event->getName()->willReturn('SomeEventOccured');
 
-        $this->notify(new EventStream([$event->getWrappedObject()]));
+        $this->notify(new EventStream(new EventStream\Name('test'), [$event->getWrappedObject()]));
 
         $someEventOccuredSubcriber->notify($event)->shouldHaveBeenCalled();
     }

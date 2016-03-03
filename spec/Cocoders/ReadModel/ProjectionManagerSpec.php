@@ -43,7 +43,10 @@ class ProjectionManagerSpec extends ObjectBehavior
 
         $event->getName()->willReturn('EventNameOccurred');
         $secondEvent->getName()->willReturn('OtherEventOccurred');
-        $this->reload(new EventStream([$event->getWrappedObject(), $secondEvent->getWrappedObject()]));
+        $this->reload(new EventStream(
+            new EventStream\Name('test'),
+            [$event->getWrappedObject(), $secondEvent->getWrappedObject()])
+        );
 
         $projection1->clear()->shouldHaveBeenCalled();
         $projection2->clear()->shouldHaveBeenCalled();

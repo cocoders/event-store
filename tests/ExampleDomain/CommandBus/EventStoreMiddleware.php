@@ -5,6 +5,8 @@ namespace ExampleDomain\CommandBus;
 use Cocoders\EventStore\EventBus\EventBus;
 use Cocoders\EventStore\EventStore;
 
+use Cocoders\EventStore\EventStream;
+use ExampleDomain\Invoice;
 use League\Tactician\Middleware;
 
 final class EventStoreMiddleware implements Middleware
@@ -17,11 +19,13 @@ final class EventStoreMiddleware implements Middleware
      * @var EventBus
      */
     private $eventBus;
+    private $streamNames = [];
 
-    public function __construct(EventStore $eventStore, EventBus $eventBus)
+    public function __construct(EventStore $eventStore, EventBus $eventBus, array $streamNames)
     {
         $this->eventStore = $eventStore;
         $this->eventBus = $eventBus;
+        $this->streamNames = $streamNames;
     }
 
     /**
@@ -34,9 +38,17 @@ final class EventStoreMiddleware implements Middleware
     {
         $next($command);
 
-        $newEvents = $this->eventStore->findUncommited();
+        $unncommitedEventStreams = [];
+        foreach ($this->streamNames as $streamName) {
+            $unncommitedEventStreams[] = $this->eventStore->findUncommited(
+                new EventStream\Name($streamName)
+            );
+        }
         $this->eventStore->commit();
-        $this->eventBus->notify($newEvents);
+
+        foreach ($unncommitedEventStreams as $eventStream) {
+            $this->eventBus->notify($eventStream);
+        }
     }
 }
 
