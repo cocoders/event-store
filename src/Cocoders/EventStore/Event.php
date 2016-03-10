@@ -2,11 +2,11 @@
 
 namespace Cocoders\EventStore;
 
-use DateTimeImmutable;
+use DateTimeInterface;
 
 interface Event
 {
     public function getAggreagateRootId(): AggregateRootId;
     public function getName(): string;
-    public function occurredOn(): DateTimeImmutable;
+    public function occurredOn(): DateTimeInterface;
 }

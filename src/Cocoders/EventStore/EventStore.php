@@ -10,4 +10,3 @@ interface EventStore
     public function apply(EventStream\Name $name, array $events);
     public function commit();
 }
-

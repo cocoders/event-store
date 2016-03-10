@@ -3,7 +3,7 @@
 namespace ExampleDomain\Invoice\Events;
 
 use Cocoders\EventStore\AggregateRootId;
-use DateTimeImmutable;
+use DateTimeInterface;
 use ExampleDomain\Invoice\Amount;
 use ExampleDomain\Invoice\Id;
 
@@ -59,7 +59,7 @@ final class ItemAdded implements Event
         return 'ItemAdded';
     }
 
-    public function occurredOn(): DateTimeImmutable
+    public function occurredOn(): DateTimeInterface
     {
         return $this->occurredOn;
     }
