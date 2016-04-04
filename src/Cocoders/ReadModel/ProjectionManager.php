@@ -27,12 +27,15 @@ final class ProjectionManager
         $this->subscribers->registerSubscriber($eventName, $projection);
     }
 
-    public function reload(EventStream $eventStream)
+    public function clear()
     {
         foreach ($this->projections as $projection) {
             $projection->clear();
         }
+    }
 
+    public function notify(EventStream $eventStream)
+    {
         foreach ($eventStream as $event) {
             $this->notifyProjections($event);
         }
